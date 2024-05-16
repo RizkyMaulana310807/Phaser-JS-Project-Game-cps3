@@ -1,3 +1,4 @@
+
 function createClickableText(scene, x, y, text, font, fontS, color, onClick, blink) {
     var button = scene.add.text(x, y, text, { fontFamily: font, fontSize: fontS, color: color })
         .setInteractive()
@@ -32,7 +33,6 @@ function createAnimatedText(scene, x, y, text, fontFamily, fontSize, color, boun
     var newText = scene.add.text(x, y, text, { fontFamily: fontFamily, fontSize: fontSize, color: color });
     newText.setOrigin(0.5, 0.5);
 
-    // Animasi muncul dengan efek bounce
     scene.tweens.add({
         targets: newText,
         y: y + 200,
@@ -40,7 +40,7 @@ function createAnimatedText(scene, x, y, text, fontFamily, fontSize, color, boun
         ease: 'Bounce.easeOut',
         delay: bounceDelay,
         onComplete: function () {
-            // Menggunakan self untuk merujuk ke objek Scene
+
             scene.tweens.add({
                 targets: newText,
                 duration: colorChangeDuration,
@@ -63,7 +63,6 @@ function createAnimatedText(scene, x, y, text, fontFamily, fontSize, color, boun
 
     return newText;
 }
-
 class menu extends Phaser.Scene{
     constructor(){
         super("menuLayout");
@@ -71,7 +70,7 @@ class menu extends Phaser.Scene{
 
     rectangle(x, y, width, height, color, origin, interactive, blink) {
         var rect = this.add.rectangle(x, y, width, height, color);
-        rect.setOrigin(origin.x, origin.y); // Atur origin
+        rect.setOrigin(origin.x, origin.y);
         if (interactive) {
             rect.setInteractive();
             rect.on('pointerdown', function () {
@@ -88,32 +87,107 @@ class menu extends Phaser.Scene{
     }
 
     create(){
-        var self = this; // Simpan referensi ke objek Scene dalam variabel self
-        createAnimatedText(self, 736 / 2, -50, 'Gamerz!', 'modern warfare', 50, 'blue', 1500, 500, 1000, 20, 1100, 900);
-        createAnimatedText(self, 736 / 2, -50, 'Gamerz!', 'modern warfare', 50, '#ff0000', 1500, 500, 1000, 20, 1050, 900);
-        createAnimatedText(self, 736 / 2, -50, 'Gamerz!', 'modern warfare', 48, '#ffffff', 1500, 500, 1000, 20, 1000);
+        var self = this;
+        createAnimatedText(self, 736 / 2, -50, 'Gamerz!', 'pixemon trial', 50, 'blue', 1500, 500, 1000, 20, 1100, 900);
+        createAnimatedText(self, 736 / 2, -50, 'Gamerz!', 'pixemon trial', 50, '#ff0000', 1500, 500, 1000, 20, 1050, 900);
+        createAnimatedText(self, 736 / 2, -50, 'Gamerz!', 'pixemon trial', 48, '#ffffff', 1500, 500, 1000, 20, 1000);
         
 
-        this.rectangle(736 / 2, 300, 185, 55, 0xffffff00, {x: 0.5, y: 0.5}, false, true);
-        this.rectangle(736 / 2, 300, 180, 50, 0xff0000, {x: 0.5, y: 0.5}, true);
-        createClickableText(this, 736 / 2, 300, 'Play', 'modern warfare', 50, '#ffee00', function (){
-            console.log('Button clicked');
-        }, true);
-        createClickableText(this, 736 / 2, 300, 'Play','modern warfare', 48, '#ffffff', function () {
+        var outlineRectPlay = this.rectangle(736 / 2, 300, 185, 55, 0x000000, {x: 0.5, y: 0.5}, false);
+        var rectPlay = this.rectangle(736 / 2, 300, 180, 50, 0xff0000, {x: 0.5, y: 0.5}, true);
+        rectPlay.on('pointerover', function(){
+            console.log('button hovered');
+            outlineRectPlay.fillColor = '0xffff00'
+        })
+        rectPlay.on('pointerout', function(){
+            console.log('button out');
+            outlineRectPlay.fillColor = '0x000000'
+        })
+        var buttonPlay = createClickableText(this, 736 / 2, 300, 'Play','modern warfare', 48, '#ffffff', function () {
             console.log('Button clicked!');
+            setTimeout(function(){
+            self.scene.start("gameLayout");
+
+            }, 2000);
         });
+        buttonPlay.on('pointerover', function(){
+            console.log('text hovered');
+            outlineRectPlay.fillColor = '0xffff00'
+        })
+        buttonPlay.on('pointerout', function(){
+            console.log('text out');
+            outlineRectPlay.fillColor = '0x000000'
+
+        })
         // this.rectangle(90, 506.5, 180, 50, 0xff0000, {x: 0.5, y: 0.5}, true);
         var credit = this.add.rectangle(90, 506.5, 185, 50, 0xff0000);
-        createClickableText(this, 90, 506, 'Credit', 'bruce forever', 32, 'white', function(){
+        var creditText = createClickableText(this, 90, 506, 'Credit', 'bruce forever', 32, 'white', function(){
             console.log('Credit di tekan');
         })
         credit.setInteractive();
         credit.on('pointerover', function(){
             console.log('pointer hovered');
-            this.rectangle(90, 506.5, 185, 50, 0xff0000, {x: 0.5, y: 0.5}, )
+            credit.fillColor = '0xffff00'; 
+            creditText.tint = '0xff0000'
+        })
+        credit.on('pointerout', function(){
+            console.log('pointer out');
+            credit.fillColor = '0xff0000';
+            creditText.tint = '0xffffff';
+        })
+        creditText.on('pointerover', function(){
+            console.log('text hovered');
+            credit.fillColor = '0xffff00'; 
+            creditText.tint = '0xff0000'
+        })
+        creditText.on('pointerout', function (){
+            console.log('text out');
+            credit.fillColor = '0xff0000';
+            creditText.tint = '0xffffff';
         })
         
-
         
+        
+    }
+    update(){
+        var positionPointer = '';
+
+        if (Phaser.Input.Keyboard.JustDown(this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT))) {
+            console.log("Left arrow pressed");
+        } else if(Phaser.Input.Keyboard.JustDown(this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT))){
+            console.log('Right arrow pressed');
+        } else if(Phaser.Input.Keyboard.JustDown(this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN))){
+            console.log('Down arrow pressed');
+            switch(positionPointer){
+                case '':
+                    positionPointer = 'Play Button';
+                    break;
+                case 'Play Button':
+                    positionPointer = 'Credit Button';
+                    break;
+                case 'Credit Button':
+                    positionPointer = 'Play Button';
+                    break;
+                default:
+                    positionPointer = '';
+                    break;
+            }
+        } else if(Phaser.Input.Keyboard.JustDown(this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP))){
+            console.log('Up arrow pressed');
+            switch(positionPointer){
+                case '':
+                    positionPointer = 'Play Button';
+                    break;
+                case 'Play Button':
+                    positionPointer = 'Credit Button';
+                    break;
+                case 'Credit Button':
+                    positionPointer = 'Play Button';
+                    break;
+                default:
+                    positionPointer = '';
+                    break;
+            }
+        }
     }
 }

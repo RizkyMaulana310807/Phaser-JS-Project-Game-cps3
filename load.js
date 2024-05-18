@@ -3,8 +3,9 @@ class booting extends Phaser.Scene{
         super('bootGame');
     }
     preload(){
-        this.load.image("background", 'src/images/background.jpeg');
-        this.load.image('character', 'src/images/Character.png');
+        this.load.image("background", 'src/images/bg.png');
+        this.load.image('character', 'src/images/character.png');
+        this.load.image('platform', 'src/images/platform.png');
     }
     create(){
         var self = this;

@@ -49,14 +49,10 @@ class booting extends Phaser.Scene{
             frameWidth: 150,
             frameHeight: 32
         });
-        this.load.spritesheet('wizardIdle', 'src/images/wizard/Idle.png', {
-            frameWidth: 57,
-            frameHeight: 84
-        });
-        this.load.spritesheet('wizardAttack1', 'src/images/wizard/Attack1.png', {
+        this.load.spritesheet('wizard', 'src/images/wizard/wizard-spritesheet.png', {
             frameWidth: 231,
-            frameHeight: 136
-        })
+            frameHeight: 190
+        });
         this.load.image('space_button', 'src/images/icon_ui/keyboard_space.png');
         this.load.image('outline_space_button', 'src/images/icon_ui/keyboard_space_outline.png');
         this.load.audio('SwingSFX', ['src/sound/swing.ogg', 'src/sound.swing.mp3']);

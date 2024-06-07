@@ -1,20 +1,15 @@
+const config = {
+    type: Phaser.AUTO,
+    height: 532,
+    width: 736,
+    physics: {
+        default: 'arcade',
+        arcade: {
+            gravity: { y: 300 },
+            debug: false
+        }
+    },
+    scene: [booting , menu, gamePlay]
+};
 
-// var config = {
-//     height : 532,
-//     width : 736,
-//     backgroundColor : 0x000000,
-//     scene: [booting, menu, gamePlay],
-//     pixelArt: true,
-//     pyhsics: {
-//         default: 'arcade',
-//         arcade:{
-//             grafity: {y: 300},
-//             debug: false
-//         }
-//     }
-// }
-
-// var game = new Phaser.Game(config);
-// var self = this
-// self.scene.start("menuLayout");
-
+const game = new Phaser.Game(config);

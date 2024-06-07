@@ -1,4 +1,5 @@
-
+var positionPointer = '';
+var outlinerBlinking;
 function createClickableText(scene, x, y, text, font, fontS, color, onClick, blink) {
     var button = scene.add.text(x, y, text, { fontFamily: font, fontSize: fontS, color: color })
         .setInteractive()
@@ -17,8 +18,8 @@ function createClickableText(scene, x, y, text, font, fontS, color, onClick, bli
 }
 
 
-function createBlinkingText(scene, x, y, text, fontSize, color, blinkInterval) {
-    var textObject = scene.add.text(x, y, text, { fontFamily: 'Arial', fontSize: fontSize, color: color });
+function createBlinkingText(scene, x, y, text, fontSize, fontFam, color, blinkInterval) {
+    var textObject = scene.add.text(x, y, text, { fontFamily: fontFam, fontSize: fontSize, color: color });
     textObject.setOrigin(0.5);
 
     function blinkText() {
@@ -63,131 +64,236 @@ function createAnimatedText(scene, x, y, text, fontFamily, fontSize, color, boun
 
     return newText;
 }
+function rectangle(x, y, width, height, color, origin, interactive, blink) {
+    var rect = this.add.rectangle(x, y, width, height, color);
+    rect.setOrigin(origin.x, origin.y);
+    if (interactive) {
+        rect.setInteractive();
+        rect.on('pointerdown', function () {
+            console.log('rectangle clicked');
+        });
+    }
+    if (blink) {
+        function blinkRectangle() {
+            rect.alpha = (rect.alpha === 1) ? 0 : 1;
+        }
+        setInterval(blinkRectangle, 500);
+    }
+    return rect;
+}
+
 class menu extends Phaser.Scene{
     constructor(){
         super("menuLayout");
     }
 
-    rectangle(x, y, width, height, color, origin, interactive, blink) {
-        var rect = this.add.rectangle(x, y, width, height, color);
-        rect.setOrigin(origin.x, origin.y);
-        if (interactive) {
-            rect.setInteractive();
-            rect.on('pointerdown', function () {
-                console.log('rectangle clicked');
-            });
-        }
-        if (blink) {
-            function blinkRectangle() {
-                rect.alpha = (rect.alpha === 1) ? 0 : 1;
-            }
-            setInterval(blinkRectangle, 500);
-        }
-        return rect;
-    }
-
     create(){
+        this.scene.start('gameLayout')
+        
         var self = this;
-        createAnimatedText(self, 736 / 2, -50, 'Gamerz!', 'pixemon trial', 50, 'blue', 1500, 500, 1000, 20, 1100, 900);
-        createAnimatedText(self, 736 / 2, -50, 'Gamerz!', 'pixemon trial', 50, '#ff0000', 1500, 500, 1000, 20, 1050, 900);
-        createAnimatedText(self, 736 / 2, -50, 'Gamerz!', 'pixemon trial', 48, '#ffffff', 1500, 500, 1000, 20, 1000);
+        this.layer11 = this.add.tileSprite(300, 45, 928, 793, 'layer11');
+        this.layer10 = this.add.tileSprite(300, 45, 928, 793, 'layer10');
+        this.layer09 = this.add.tileSprite(300, 45, 928, 793, 'layer9');
+        this.layer08 = this.add.tileSprite(300, 70, 928, 793, 'layer8');
+        this.layer07 = this.add.tileSprite(300, 70, 928, 793, 'layer7');
+        this.layer06 = this.add.tileSprite(300, 70, 928, 793, 'layer6');
+        this.layer05 = this.add.tileSprite(300, 400, 928, 793, 'layer5');
+        this.layer04 = this.add.tileSprite(300, 400, 928, 793, 'layer4');
+        this.layer03 = this.add.tileSprite(300, 400, 928, 793, 'layer3');
+        this.layer02 = this.add.tileSprite(300, 400, 928, 793, 'layer2');
+        this.layer01 = this.add.tileSprite(300, 600, 928, 68, 'layer1');
+        this.layer00 = this.add.tileSprite(300, 200, 928, 793, 'layer0');
+        // createAnimatedText(self, 736 / 2, -50, 'Anime Fight!!', 'pixemon trial', 50, 'blue', 1500, 500, 1000, 20, 1100, 900);
+        // createAnimatedText(self, 736 / 2, -50, 'Anime Fight!!', 'pixemon trial', 50, '#ff0000', 1500, 500, 1000, 20, 1050, 900);
+        createAnimatedText(self, 736 / 2, -50, 'Ready Player One!!', 'pixemon trial', 48, '#ffffff', 1500, 500, 1000, 20, 1000);
         
+        // var playText = createBlinkingText(this, 732 / 2, 300, 'Press Space', 20, 'Bahnschrift', 'white', 800)
+        var outlineBtn = this.add.image(732 / 2, 300, 'outline_space_button').setAlpha(100);
+        var spaceBtn = this.add.image(732 / 2, 300, 'space_button').setAlpha(0);
+        var jalankan = false;
 
-        var outlineRectPlay = this.rectangle(736 / 2, 300, 185, 55, 0x000000, {x: 0.5, y: 0.5}, false);
-        var rectPlay = this.rectangle(736 / 2, 300, 180, 50, 0xff0000, {x: 0.5, y: 0.5}, true);
-        rectPlay.on('pointerover', function(){
-            console.log('button hovered');
-            outlineRectPlay.fillColor = '0xffff00'
-        })
-        rectPlay.on('pointerout', function(){
-            console.log('button out');
-            outlineRectPlay.fillColor = '0x000000'
-        })
-        var buttonPlay = createClickableText(this, 736 / 2, 300, 'Play','modern warfare', 48, '#ffffff', function () {
-            console.log('Button clicked!');
-            setTimeout(function(){
-            self.scene.start("gameLayout");
+        this.startText = this.add.text(732 / 2, 300 - 30, 'Start', { font: '16px Super Pixel', fill: '#ffffff' }).setOrigin(0.5).setAlpha(0).setInteractive().setDepth(10);
+        this.creditText = this.add.text(732 / 2, 300, 'Credit', { font: '16px Super Pixel', fill: '#ffffff' }).setOrigin(0.5).setAlpha(0).setInteractive().setDepth(10);
+        this.settingText = this.add.text(732 / 2, 300 + 30, 'Setting', { font: '16px Super Pixel', fill: '#ffffff' }).setOrigin(0.5).setAlpha(0).setInteractive().setDepth(10);
 
-            }, 2000);
+        this.kotak = this.add.graphics();
+        this.kotak.fillStyle(0xffffff, 0.5);
+        this.creditHover = this.kotak.fillRect(732 / 2 - 50, 300 - 10, 100, 25).setDepth(9).setAlpha(0);
+        this.settingHover = this.kotak.fillRect(732 / 2 - 50, 300 - 10 + 30, 100, 25).setDepth(9).setAlpha(0);
+        this.startHover = this.kotak.fillRect(732 / 2 - 50, 300 - 10 - 30, 100, 25).setDepth(9).setAlpha(0);
+
+    
+        
+        
+        // var creditText = createClickableText(this, 90, 506, 'Credit', 'bruce forever', 32, 'white', function(){
+        //     console.log('Credit di tekan');
+        // })
+        outlinerBlinking = setInterval(() => {
+            (outlineBtn.alpha === 1) ? outlineBtn.setAlpha(0) : outlineBtn.setAlpha(1);
+        }, 250);
+        
+        // var camera1 = this.cameras.add(0, 0, 736, 532);
+        // camera1.setOrigin(0.5);
+        // camera1.setZoom(2);
+        
+        //stroke 
+        // graphics.lineStyle(2, 0xffffff, 0.5);
+    // graphics.strokeRect(100, 100, 200, 100);; 
+    
+        
+        const keyboard = this.input.keyboard;
+    
+        keyboard.on('keydown-SPACE', function(){
+            
+            
+            // console.log('SPACE di tekan');
+            clearInterval(outlinerBlinking);
+            outlineBtn.setAlpha(0);
+            spaceBtn.setAlpha(1);
+            let i = 0;
+            let setBlink = setInterval(() => {
+                (spaceBtn.alpha === 1) ? spaceBtn.setAlpha(0) : spaceBtn.setAlpha(1);
+                if(i == 8){
+                    clearInterval(setBlink);
+                    spaceBtn.destroy();
+                    outlineBtn.destroy();
+                } else{
+                    i++;
+                }
+            }, 125);
+            
+            // setTimeout(() => {
+                // self.scene.start("gameLayout");
+                this.jalankan = true
+            // }, 1000);
+            // if(jalankan){
+                console.log('start')
+                    self.tweens.add({
+                        targets: self.startText,
+                        alpha: 1,
+                        ease: 'ease',
+                        delay: 1000,
+                        duration: 1000
+                    })
+                    self.tweens.add({
+                        targets: self.creditText,
+                        alpha: 1,
+                        ease: 'ease',
+                        delay: 1000,
+                        duration: 1000
+                    })
+                    self.tweens.add({
+                        targets: self.settingText,
+                        alpha: 1,
+                        ease: 'ease',
+                        delay: 1000,
+                        duration: 1000
+                    })
+                    console.log('end')
+            // } 
+            
         });
-        buttonPlay.on('pointerover', function(){
-            console.log('text hovered');
-            outlineRectPlay.fillColor = '0xffff00'
-        })
-        buttonPlay.on('pointerout', function(){
-            console.log('text out');
-            outlineRectPlay.fillColor = '0x000000'
-
-        })
-        // this.rectangle(90, 506.5, 180, 50, 0xff0000, {x: 0.5, y: 0.5}, true);
-        var credit = this.add.rectangle(90, 506.5, 185, 50, 0xff0000);
-        var creditText = createClickableText(this, 90, 506, 'Credit', 'bruce forever', 32, 'white', function(){
-            console.log('Credit di tekan');
-        })
-        credit.setInteractive();
-        credit.on('pointerover', function(){
-            console.log('pointer hovered');
-            credit.fillColor = '0xffff00'; 
-            creditText.tint = '0xff0000'
-        })
-        credit.on('pointerout', function(){
-            console.log('pointer out');
-            credit.fillColor = '0xff0000';
-            creditText.tint = '0xffffff';
-        })
-        creditText.on('pointerover', function(){
-            console.log('text hovered');
-            credit.fillColor = '0xffff00'; 
-            creditText.tint = '0xff0000'
-        })
-        creditText.on('pointerout', function (){
-            console.log('text out');
-            credit.fillColor = '0xff0000';
-            creditText.tint = '0xffffff';
-        })
         
-        
-        
+        this.startText.on('pointerover', () => {
+            this.startHover.setAlpha(1)
+        })
+        this.startText.on('pointerout', () => {
+            this.startHover.setAlpha(0)
+        })
+       
+        this.tweens.add({
+            targets: this.layer00,
+            y: 135,
+            duration: 1500,
+            ease: 'Power2'
+        });
+        this.tweens.add({
+            targets: this.layer01,
+            y: 500,
+            duration: 1500,
+            ease: 'Power2'
+        });
+        this.tweens.add({
+            targets: this.layer02,
+            y: 135,
+            duration: 2500,
+            ease: 'Power2'
+        });
+        this.tweens.add({
+            targets: this.layer03,
+            y: 135,
+            duration: 2500,
+            ease: 'Power2'
+        });
+        this.tweens.add({
+            targets: this.layer04,
+            y: 135,
+            duration: 2000,
+            ease: 'Power2'
+        });
+        this.tweens.add({
+            targets: this.layer05,
+            y: 135,
+            duration: 2000,
+            ease: 'Power2'
+        });
+        this.tweens.add({
+            targets: this.layer06,
+            y: 135,
+            duration: 2000,
+            ease: 'Power2'
+        });
+        this.tweens.add({
+            targets: this.layer07,
+            y: 135,
+            duration: 2000,
+            ease: 'Power2'
+        });
+        this.tweens.add({
+            targets: this.layer08,
+            y: 135,
+            duration: 2000,
+            ease: 'Power2'
+        });
+        this.tweens.add({
+            targets: this.layer09,
+            y: 135,
+            duration: 2000,
+            ease: 'Power2'
+        });
+        this.tweens.add({
+            targets: this.layer10,
+            y: 135,
+            duration: 2000,
+            ease: 'Power2'
+        });
+        this.tweens.add({
+            targets: this.layer11,
+            y: 135,
+            duration: 2000,
+            ease: 'Power2'
+        });
     }
     update(){
-        var positionPointer = '';
-
-        if (Phaser.Input.Keyboard.JustDown(this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT))) {
-            console.log("Left arrow pressed");
-        } else if(Phaser.Input.Keyboard.JustDown(this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT))){
-            console.log('Right arrow pressed');
-        } else if(Phaser.Input.Keyboard.JustDown(this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN))){
-            console.log('Down arrow pressed');
-            switch(positionPointer){
-                case '':
-                    positionPointer = 'Play Button';
-                    break;
-                case 'Play Button':
-                    positionPointer = 'Credit Button';
-                    break;
-                case 'Credit Button':
-                    positionPointer = 'Play Button';
-                    break;
-                default:
-                    positionPointer = '';
-                    break;
-            }
-        } else if(Phaser.Input.Keyboard.JustDown(this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP))){
-            console.log('Up arrow pressed');
-            switch(positionPointer){
-                case '':
-                    positionPointer = 'Play Button';
-                    break;
-                case 'Play Button':
-                    positionPointer = 'Credit Button';
-                    break;
-                case 'Credit Button':
-                    positionPointer = 'Play Button';
-                    break;
-                default:
-                    positionPointer = '';
-                    break;
-            }
-        }
+        
+            this.layer00.tilePositionX += 6;
+            this.layer01.tilePositionX += 6;
+            this.layer02.tilePositionX += 5;
+            this.layer03.tilePositionX += 5;
+            this.layer04.tilePositionX += 5;
+            this.layer05.tilePositionX += 4;
+            this.layer06.tilePositionX += 3;
+            this.layer07.tilePositionX += 3;
+            this.layer08.tilePositionX += 2;
+        
     }
 }
+
+
+// const menuConfig = {
+//     type: Phaser.AUTO,
+//     height: 532,
+//     width: 736,
+//     scene: menu
+// };
+// const menu_config = new Phaser.Game(menuConfig);

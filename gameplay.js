@@ -1,3 +1,20 @@
+function wizardUpdaterHp(hpBar) {
+    hpBar.clear();
+    hpBar.fillStyle(0xff0000, 1);
+    const hpWidth = (hpBar.currentHP / hpBar.maxHP) * 200;
+    const startX = 500 + (200 - hpWidth);
+    hpBar.fillRect(startX, 30, hpWidth, 20);
+
+}
+function characterUpdaterHp(hpBar){
+    hpBar.clear();
+    hpBar.fillStyle(0xff0000, 1);
+    const hpWidth = (hpBar.currentHP / hpBar.maxHP) * 200;
+    hpBar.fillRect(50, 30, hpWidth, 20);
+}
+
+
+
 class gamePlay extends Phaser.Scene {
     platforms;
     character;
@@ -11,6 +28,20 @@ class gamePlay extends Phaser.Scene {
     constructor() {
         super('gameLayout');
         }
+        createDeadEye(){
+            this.deadEye = this.physics.add.sprite(600, 100, 'deadEye').setScale(2);
+        this.deadEye.flipX = true;
+        this.deadEye.setSize(50, 50, true)
+        this.deadEye.setCollideWorldBounds(true);
+        this.deadInter = setInterval(() => {
+            this.deadEye.setVelocityY(-15)
+            }, 500);
+        this.deadEye.on('destroy', () => {
+            clearInterval(this.deadInter)
+            console.log('destroyed');
+            this.createDeadEye()
+        })
+            }
         createHpBar(monster) {
             let bar = this.add.graphics();
             bar.fillStyle(0x000000, 1);
@@ -35,6 +66,7 @@ class gamePlay extends Phaser.Scene {
         
 
     create() {
+        this.scene.stop('menuLayout');
         this.platforms = this.physics.add.staticGroup();
         this.platforms.create(300, 525, 'platform');
         this.layer11 = this.add.tileSprite(300, 135, 928, 793, 'layer11');
@@ -52,11 +84,8 @@ class gamePlay extends Phaser.Scene {
 
         this.character = this.physics.add.sprite(100, 380, 'character').setScale(3);
         this.character.setCollideWorldBounds(true);
-        this.deadEye = this.physics.add.sprite(600, 100, 'deadEye').setScale(2);
-        // this.deadEye.setGravity(-300)
-        this.deadEye.flipX = true;
-        this.deadEye.setSize(50, 50, true)
-        this.deadEye.setCollideWorldBounds(true);
+        this.createDeadEye()
+        
         this.wizard = this.physics.add.sprite(600, 200, 'wizard').setScale(1.5);
         this.wizard.flipX = true;
         this.wizard.setCollideWorldBounds(true);
@@ -69,58 +98,21 @@ class gamePlay extends Phaser.Scene {
         this.wizard.setDepth(9);
         this.cursors = this.input.keyboard.createCursorKeys();
         this.keys = this.input.keyboard.addKeys('W,A,S,D,F,R,T,G,H,Y,J,U,I,K,L,O,P');
-        // this.character.drawDebug = true;
-        // const boundingBox = this.character.skeleton.getBounds();
-        function wizardUpdaterHp(hpBar) {
-            hpBar.clear();
-            hpBar.fillStyle(0xff0000, 1);
-            const hpWidth = (hpBar.currentHP / hpBar.maxHP) * 200;
-            const startX = 500 + (200 - hpWidth);
-            hpBar.fillRect(startX, 30, hpWidth, 20);
-
-        }
-        function characterUpdaterHp(hpBar){
-            hpBar.clear();
-            hpBar.fillStyle(0xff0000, 1);
-            const hpWidth = (hpBar.currentHP / hpBar.maxHP) * 200;
-            hpBar.fillRect(50, 30, hpWidth, 20);
-        }
+        
         this.wizardHp = this.add.graphics();
         this.wizardHp.fillStyle(0xff0000, 1);
         this.wizardHp.fillRect(500, 30, 200, 20);
-        this.wizardHp.currentHP = 100; // Initial HP
-        this.wizardHp.maxHP = 100; // Maximum HP
+        this.wizardHp.currentHP = 100;
+        this.wizardHp.maxHP = 100;
         
         this.characterHp = this.add.graphics();
         this.characterHp.fillStyle(0xff0000, 1);
-        this.characterHp.fillRect(45, 30, 200, 20);
-        this.characterHp.currentHP = 100; // Initial HP
-        this.characterHp.maxHP = 100; // Maximum HP
+        this.characterHp.fillRect(50, 30, 200, 20);
+        this.characterHp.currentHP = 100; 
+        this.characterHp.maxHP = 100; 
         
-        this.time.addEvent({
-            delay: 500,
-            callback: () => {
-                if (this.characterHp.currentHP < 0) {
-                    this.characterHp.currentHP = 0;
-                }
-                characterUpdaterHp(this.characterHp);
-            },
-            callbackScope: this,
-            loop: true
-        })
-        
-    // Example damage to test the bar
-    this.time.addEvent({
-        delay: 500,
-        callback: () => {
-            if (this.wizardHp.currentHP < 0) {
-                this.wizardHp.currentHP = 0;
-            }
-            wizardUpdaterHp(this.wizardHp);
-        },
-        callbackScope: this,
-        loop: true
-    });
+                
+
 
 
         
@@ -216,17 +208,18 @@ class gamePlay extends Phaser.Scene {
             frames: this.anims.generateFrameNumbers('wizard', {start: 36, end: 43}),
             frameRate: 7,
             repeat: 0,
-            onComplete: () => {
-                this.wizard.anims.play('wiz_idle', true);
+            onComplete: function(){
+                console.log("Hello world")
             }
         });
+
         this.anims.create({
             key: 'wiz_hit',
             frames: this.anims.generateFrameNumbers('wizard', {start: 17, end: 19}),
             frameRate: 10,
             repeat: 0,
             onComplete: () => {
-                this.wizard.anims.play('wiz_idle', true);
+                console.log("Berakhir")
             }
         });
         this.anims.create({
@@ -234,9 +227,6 @@ class gamePlay extends Phaser.Scene {
             frames: this.anims.generateFrameNumbers('wizard', {start: 9, end: 14}),
             frameRate: 10,
             repeat: 0,
-            onComplete: () => {
-                this.wizard.anims.play('wiz_idle', true);
-            }
         })
         
         //creature attack
@@ -251,7 +241,9 @@ class gamePlay extends Phaser.Scene {
         
         this.physics.add.collider(this.character, this.platforms, this.touchedDown);
         this.physics.add.collider(this.wizard, this.platforms);
+        this.physics.add.collider(this.deadEye, this.platforms)
         this.physics.add.collider(this.wizard, this.character, playerCollisionEnemy);
+        this.physics.add.collider(this.deadEye, this.character, this.checkDeadCollision)
     
         function playerCollisionEnemy(){
             // console.log('collide');
@@ -261,16 +253,15 @@ class gamePlay extends Phaser.Scene {
 
         this.music = this.sound.add('SwingSFX');
         this.character.on('animationcomplete', this.onAnimationComplete, this);
-        setInterval(() => {
-        this.deadEye.setVelocityY(-123.5)
-            
-        }, 1000);
-        
+        this.counter = 0;
+        this.delayMagicShoot = false;
     };
 
     
     
-    
+    checkDeadCollision(){
+        console.log('player kalah')
+    }
     touchedDown(){
         // console.log('down')
         this.playerIsTouchedDown = true;
@@ -281,31 +272,32 @@ class gamePlay extends Phaser.Scene {
         }
         this.character.anims.play('idle', true);
     }
+    
     update() {
+        
+        // this.wizard.anims.play('wiz_idle', true)
         var dist = this.calculateDistance(this.character, this.wizard);
+        var dist2 = this.calculateDistance(this.character, this.deadEye);
         // console.log(`Jarak antara boundingBox1 dan boundingBox2 adalah : ${dist} ;`);
-
+        const onGround = this.character.body.blocked.down
         const { left, right, up, down, shift, space } = this.cursors;
         const hitPlatform = this.character.body.touching.down;
-        if(this.wizardHp.currentHP < 0){
-            console.log('wizard death')
-            this.wizard.anims.play('wiz_death', true)
+        
+        if(this.characterHp.currentHP == 0){
+            this.victory = this.add.text(736 / 2, 532 / 2 - 150, "Player 2 Win", { fontFamily: 'Modern Warfare', fontSize: 32, color: '#ffffff' });
         }
         if (this.animPlaying) {
             this.character.setVelocityX(0);
             return;
         }
+
+        if (this.keys.W.isDown && onGround) {10
+            this.character.setVelocityY(-160);
+            this.character.anims.play('jump', true);
+            this.playerJumped = true;
+        }
         if (this.keys.A.isDown) {
             this.character.setVelocityX(-60);
-            this.layer00.tilePositionX -= 2;
-            this.layer01.tilePositionX -= 2;
-            this.layer02.tilePositionX -= 1;
-            this.layer03.tilePositionX -= 1;
-            this.layer04.tilePositionX -= 1;
-            this.layer05.tilePositionX -= 0.5;
-            this.layer06.tilePositionX -= 0.3;
-            this.layer07.tilePositionX -= 0.2;
-            this.layer08.tilePositionX -= 0.2;
             if (!this.animPlaying) {
                 this.character.anims.play('backward', true);
             }
@@ -313,79 +305,136 @@ class gamePlay extends Phaser.Scene {
         } else if (this.keys.D.isDown) {
             // console.log('pressed d')
             this.character.setVelocityX(160);
-            this.layer00.tilePositionX += 6;
-            this.layer01.tilePositionX += 6;
-            this.layer02.tilePositionX += 5;
-            this.layer03.tilePositionX += 5;
-            this.layer04.tilePositionX += 5;
-            this.layer05.tilePositionX += 4;
-            this.layer06.tilePositionX += 3;
-            this.layer07.tilePositionX += 3;
-            this.layer08.tilePositionX += 2;
             if (!this.animPlaying) {
                 this.character.anims.play('run', true);
             }
             this.playerJumped = true;
-        } else if (Phaser.Input.Keyboard.JustDown(this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W))) {
-            this.character.setVelocityY(-160); 
-            // if (!this.animPlaying) {
-                this.character.anims.play('jump', true);
-            // }
-            this.playerJumped = false;
         } else if (this.keys.S.isDown) {
             this.character.setVelocityY(600);
             this.playerJumped = true;
-        }else if (shift.isDown) {
+        }else {
+            this.character.setVelocityX(0);
+            // if (!this.animPlaying) {
+                    this.character.anims.play('idle', true);
+            // }
+        }     
+
+        if(this.wizardHp.currentHP == 0){
+            console.log('wizard death')
+            this.wizard.anims.play('wiz_death', true);
+            this.victory = this.add.text(736 / 2, 532 / 2 - 150, "Player 1 Win", { fontFamily: 'Modern Warfare', fontSize: 32, color: '#ffffff' });
+        }
+        
+         if (shift.isDown) {
             this.character.setVelocityX(0);
                 this.character.anims.play('block_idle', true);
-        } else if (this.keys.F.isDown && !this.animPlaying) {
-            if(dist < 229 && dist > 157){
-                console.log(`player dalam jarak : ${dist}`)
-                this.wizardHp.currentHP -= 10;
-                this.wizard.anims.play('wiz_hit', true);
-                this.wizard.setVelocityX(10)
-                this.wizard.setVelocityX(0)
-                console.log(this.wizardHp.currentHP)
-
-            } else if(dist < 157){
-                console.log(`player dalam sangat dekat : ${dist}`)
+        }
+        if(this.keys.F.isDown && !this.animPlaying){
+            if(this.counter == 2){
+                this.character.anims.play('attack1', true);
+                this.wizard.anims.play('wiz_hit', true)
+                console.log("If : ",this.counter)
+                this.counter = 0
+                } else{
+                this.character.anims.play('attack2', true);
+                this.wizard.anims.play('wiz_hit', true)
+                console.log("Else : ",this.counter)
+                this.counter++;
             }
-            
-            
-            this.character.anims.play('attack2', true);
+            if(dist < 229 && dist > 157){
+                this.wizardHp.currentHP -= Math.floor(Math.random(12, 32) * 10);
+                this.wizard.setVelocityX(100);
+                setTimeout(() => {
+                    this.wizard.setVelocityX(0);
+                }, 250);
+                if (this.wizardHp.currentHP <= 0) {
+                    this.wizardHp.currentHP = 0;
+                    console.log("Character current 0 berjalan")
+                    if(this.wizardHp.currentHP == 0){
+                        this.delayMagicShoot = false;
+                        console.log('wizard death')
+                        this.wizard.anims.play('wiz_death', true);
+                        this.victory = this.add.text(736 / 2, 532 / 2 - 150, "Player 1 Win", { fontFamily: 'Modern Warfare', fontSize: 32, color: '#ffffff' });
+                    }
+                    } else{
+                characterUpdaterHp(this.wizardHp);
+                    console.log("Character hp updater bejalan")
+                }
+                wizardUpdaterHp(this.wizardHp);
+                console.log(this.wizardHp.currentHP);
+            } else if(dist < 157){
+                console.log(`Player sangat dekat: ${dist}`);
+                this.wizardHp.currentHP -= Math.floor(Math.random(14, 35) * 10);
+                this.wizard.setVelocityX(100);
+                setTimeout(() => {
+                    this.wizard.setVelocityX(0);
+                }, 250);
+                if (this.wizardHp.currentHP <= 0) {
+                    this.wizardHp.currentHP = 0;
+                    console.log("Character current 0 berjalan")
+                    
+                    } else{
+                characterUpdaterHp(this.wizardHp);
+                    console.log("Character hp updater bejalan")
+                }
+                wizardUpdaterHp(this.wizardHp);
+                console.log(this.wizardHp.currentHP);
+            }
+            if(dist2 < 178){
+                console.log('Dalam jarak');
+                this.deadEye.destroy();
+            }     
+            // this.character.anims.play('attack2', true);
             this.music.play();
             this.animPlaying = true;
             this.character.setVelocityX(0); 
             return;
-        } else if(this.keys.R.isDown && !this.animPlaying){
+        }
+        
+         if(this.keys.R.isDown && !this.animPlaying){
             this.character.anims.play('attack1', true);
             this.music.play();
-
             this.animPlaying = true;
             this.character.setVelocityX(0);
             return;
-        } else if(this.keys.T.isDown && !this.animPlaying){
+        } 
+         if(this.keys.T.isDown && !this.animPlaying){
             this.character.anims.play('attack3', true);
             this.animPlaying = true;
             this.music.play();
 
             this.character.setVelocityX(0);
-        } else if(this.keys.P.isDown && !this.animPlaying){
-            // this.character.anims.play('rolling', true);
-            this.wizard.anims.play('wiz_death', true);
-            
+        }
+         if(this.keys.P.isDown && !this.delayMagicShoot){
+            setTimeout(() => {
+                    this.delayMagicShoot = false
+                }, 1200);
+            this.delayMagicShoot = true;
+            this.wizard.anims.play('wiz_attack1', true);
+            this.characterHp.currentHP -= Math.floor(Math.random(15, 45) * 10);
+                this.character.anims.play('hurt', true);
+                if (this.characterHp.currentHP < 0) {
+                    this.characterHp.currentHP = 0;
+                    console.log("Character current 0 berjalan")
+                    } else{
+                characterUpdaterHp(this.characterHp);
+                    console.log("Character hp updater bejalan")
+                }
+                console.log(this.characterHp.currentHP)        
+                characterUpdaterHp(this.characterHp)
                 
-        
-               
-        
-            // this.animPlaying = true;
-            // this.character.setVelocityX(300);
-        }else {
-            this.character.setVelocityX(0);
-            if (!this.animPlaying) {
-                // console.log(true)
-                    this.character.anims.play('idle', true);
-            }
-        }        
+        }else if(!this.delayMagicShoot){
+            this.wizard.anims.play('wiz_idle', true);
+        }
+
+
+
+        if (!onGround && this.character.body.velocity.y < 0) {
+            this.character.anims.play('jump', true);
+        } else if (!onGround && this.character.body.velocity.y > 0) {
+            this.character.anims.play('fall', true);
+        }
     }
 }
+
+

@@ -1,9 +1,9 @@
 var player = {
-    hp: 100, // hit points
-    mp: 50,  // mana points
-    defense: 10, // pertahanan
-    attack: 20, // serangan
-    poisonResistance: 11 // kekebalan terhadap racun
+    hp: 100,
+    mp: 50, 
+    defense: 10,
+    attack: 20,
+    poisonResistance: 11 
 };
 var wizard = {
     hp: 100,
@@ -12,7 +12,6 @@ var wizard = {
     attack: 300,
     poisonResistance: 15
 }
-
 
 
 var audioPlayer = true;
@@ -56,14 +55,15 @@ class booting extends Phaser.Scene{
         this.load.image('space_button', 'src/images/icon_ui/keyboard_space.png');
         this.load.image('outline_space_button', 'src/images/icon_ui/keyboard_space_outline.png');
         this.load.audio('SwingSFX', ['src/sound/swing.ogg', 'src/sound.swing.mp3']);
+        this.load.audio('bgm', 'src/audio/main_menu_bgm.wav');
+        this.load.audio('clickFx', 'src/sound/click.wav');
+
         console.log("end load")
     };
     create(){
-        this.scene.start('menuLayout')
 
         const keyCodes = this.input.keyboard;
         var self = this;
-
         // this.ichika = this.add.image(0, 0, 735, 516, 'space_button');
         // this.ichika.setOrigin(0.5)
         // this.ichika.setDepth(8);
@@ -78,6 +78,11 @@ class booting extends Phaser.Scene{
         this.confirmation.setAlpha(0);
         this.confirmation.setDepth(10)
 
+
+        this.info = this.add.text(736 / 2, 532 / 2 + 80, "Tutorial di file README.md", { fontFamily: 'Modern Warfare', fontSize: 12, color: '#00ff22'});
+        this.info.setOrigin(0.5)
+
+        
         this.confirm = this.add.text(736 / 2, 532 / 2, "Y / N", { fontFamily: 'Modern Warfare', fontSize: 12, color: '#00ff22'});
         this.confirm.setOrigin(0.5);
         this.confirm.setAlpha(0);
@@ -180,10 +185,4 @@ class booting extends Phaser.Scene{
     
 }
 
-// const loadConfig = {
-//     type: Phaser.AUTO,
-//     height: 532,
-//     width: 736, 
-//     scene: booting
-// };
-// const load_config = new Phaser.Game(loadConfig);
+

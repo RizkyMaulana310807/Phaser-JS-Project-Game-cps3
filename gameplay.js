@@ -285,6 +285,7 @@ class gamePlay extends Phaser.Scene {
         
         if(this.characterHp.currentHP == 0){
             this.victory = this.add.text(736 / 2, 532 / 2 - 150, "Player 2 Win", { fontFamily: 'Modern Warfare', fontSize: 32, color: '#ffffff' });
+            this.victory.setOrigin(0.5)
         }
         if (this.animPlaying) {
             this.character.setVelocityX(0);
@@ -323,6 +324,7 @@ class gamePlay extends Phaser.Scene {
             console.log('wizard death')
             this.wizard.anims.play('wiz_death', true);
             this.victory = this.add.text(736 / 2, 532 / 2 - 150, "Player 1 Win", { fontFamily: 'Modern Warfare', fontSize: 32, color: '#ffffff' });
+            this.victory.setOrigin(0.5)
         }
         
          if (shift.isDown) {
@@ -355,6 +357,7 @@ class gamePlay extends Phaser.Scene {
                         console.log('wizard death')
                         this.wizard.anims.play('wiz_death', true);
                         this.victory = this.add.text(736 / 2, 532 / 2 - 150, "Player 1 Win", { fontFamily: 'Modern Warfare', fontSize: 32, color: '#ffffff' });
+                        this.victory.setOrigin(0.5)
                     }
                     } else{
                 characterUpdaterHp(this.wizardHp);

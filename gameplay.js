@@ -321,8 +321,13 @@ class gamePlay extends Phaser.Scene {
         }     
 
         if(this.wizardHp.currentHP == 0){
+            let Blank;
             console.log('wizard death')
             this.wizard.anims.play('wiz_death', true);
+            Blank.clear();
+            Blank = this.add.graphics();
+            Blank.fillStyle(0x000000, 1);
+            Blank.fillRect(0, 0, 800, 1000);
             this.victory = this.add.text(736 / 2, 532 / 2 - 150, "Player 1 Win", { fontFamily: 'Modern Warfare', fontSize: 32, color: '#ffffff' });
             this.victory.setOrigin(0.5)
         }

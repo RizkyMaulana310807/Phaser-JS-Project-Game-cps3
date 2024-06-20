@@ -208,7 +208,7 @@ class gamePlay extends Phaser.Scene {
             frames: this.anims.generateFrameNumbers('wizard', {start: 36, end: 43}),
             frameRate: 7,
             repeat: 0,
-            onComplete: function(){
+            onAnimationComplete: function(){
                 console.log("Hello world")
             }
         });
@@ -227,6 +227,9 @@ class gamePlay extends Phaser.Scene {
             frames: this.anims.generateFrameNumbers('wizard', {start: 9, end: 14}),
             frameRate: 10,
             repeat: 0,
+            onAnimationComplete: () => {
+                console.log("Hello world")
+            }
         })
         
         //creature attack
@@ -258,6 +261,11 @@ class gamePlay extends Phaser.Scene {
     };
 
     
+    checkGameOver(playerHp, wizardHp){
+        if(playerHp == 0 || wizardHp == 0){
+            console.log("Game berakhir");
+        }
+    }
     
     checkDeadCollision(){
         console.log('player kalah')
@@ -274,7 +282,7 @@ class gamePlay extends Phaser.Scene {
     }
     
     update() {
-        
+        // this.checkGameOver();
         // this.wizard.anims.play('wiz_idle', true)
         var dist = this.calculateDistance(this.character, this.wizard);
         var dist2 = this.calculateDistance(this.character, this.deadEye);
@@ -284,8 +292,16 @@ class gamePlay extends Phaser.Scene {
         const hitPlatform = this.character.body.touching.down;
         
         if(this.characterHp.currentHP == 0){
-            this.victory = this.add.text(736 / 2, 532 / 2 - 150, "Player 2 Win", { fontFamily: 'Modern Warfare', fontSize: 32, color: '#ffffff' });
-            this.victory.setOrigin(0.5)
+            let Blank;
+            this.character.anims.play('death', true);
+            setTimeout(() => {
+                Blank = this.add.graphics();
+                Blank.fillStyle(0x000000, 1);
+                Blank.fillRect(0, 0, 736, 532);
+                Blank.setDepth(10);
+                this.victory = this.add.text(736 / 2, 532 / 2 - 150, "Player 2 Win", { fontFamily: 'Modern Warfare', fontSize: 32, color: '#ffffff' });
+                this.victory.setOrigin(0.5).setDepth(11);
+                }, 2000);
         }
         if (this.animPlaying) {
             this.character.setVelocityX(0);
@@ -324,12 +340,14 @@ class gamePlay extends Phaser.Scene {
             let Blank;
             console.log('wizard death')
             this.wizard.anims.play('wiz_death', true);
-            Blank.clear();
+            setTimeout(() => {
             Blank = this.add.graphics();
             Blank.fillStyle(0x000000, 1);
-            Blank.fillRect(0, 0, 800, 1000);
+            Blank.fillRect(0, 0, 736, 532);
+            Blank.setDepth(10);
             this.victory = this.add.text(736 / 2, 532 / 2 - 150, "Player 1 Win", { fontFamily: 'Modern Warfare', fontSize: 32, color: '#ffffff' });
-            this.victory.setOrigin(0.5)
+            this.victory.setOrigin(0.5).setDepth(11);
+            }, 2000);
         }
         
          if (shift.isDown) {
@@ -339,17 +357,16 @@ class gamePlay extends Phaser.Scene {
         if(this.keys.F.isDown && !this.animPlaying){
             if(this.counter == 2){
                 this.character.anims.play('attack1', true);
-                this.wizard.anims.play('wiz_hit', true)
                 console.log("If : ",this.counter)
                 this.counter = 0
                 } else{
                 this.character.anims.play('attack2', true);
-                this.wizard.anims.play('wiz_hit', true)
                 console.log("Else : ",this.counter)
                 this.counter++;
             }
             if(dist < 229 && dist > 157){
-                this.wizardHp.currentHP -= Math.floor(Math.random(12, 32) * 10);
+                this.wizard.anims.play('wiz_hit', true)
+                this.wizardHp.currentHP -= Math.floor(Math.random(67, 132) * 10);
                 this.wizard.setVelocityX(100);
                 setTimeout(() => {
                     this.wizard.setVelocityX(0);
@@ -358,11 +375,10 @@ class gamePlay extends Phaser.Scene {
                     this.wizardHp.currentHP = 0;
                     console.log("Character current 0 berjalan")
                     if(this.wizardHp.currentHP == 0){
+                        let Blank;
                         this.delayMagicShoot = false;
                         console.log('wizard death')
                         this.wizard.anims.play('wiz_death', true);
-                        this.victory = this.add.text(736 / 2, 532 / 2 - 150, "Player 1 Win", { fontFamily: 'Modern Warfare', fontSize: 32, color: '#ffffff' });
-                        this.victory.setOrigin(0.5)
                     }
                     } else{
                 characterUpdaterHp(this.wizardHp);
@@ -419,11 +435,16 @@ class gamePlay extends Phaser.Scene {
                 }, 1200);
             this.delayMagicShoot = true;
             this.wizard.anims.play('wiz_attack1', true);
-            this.characterHp.currentHP -= Math.floor(Math.random(15, 45) * 10);
+            // this.character.setVelocityX(-160);
+            // setTimeout(() => {
+            // this.character.setVelocityX(0);
+            // }, 1000);
+            this.characterHp.currentHP -= Math.floor(Math.random(360, 600) * 10);
                 this.character.anims.play('hurt', true);
                 if (this.characterHp.currentHP < 0) {
                     this.characterHp.currentHP = 0;
                     console.log("Character current 0 berjalan")
+                    this.character.anims.play('death', true);
                     } else{
                 characterUpdaterHp(this.characterHp);
                     console.log("Character hp updater bejalan")

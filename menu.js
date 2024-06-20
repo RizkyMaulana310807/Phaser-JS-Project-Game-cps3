@@ -82,15 +82,15 @@ class menu extends Phaser.Scene{
   
 
         this.startText = this.add.text(732 / 2, 300 - 30, 'Start', { font: '16px Super Pixel', fill: '#ffffff' }).setOrigin(0.5).setAlpha(0).setInteractive().setDepth(10);
-        this.creditText = this.add.text(732 / 2, 300, 'Credit', { font: '16px Super Pixel', fill: '#ffffff' }).setOrigin(0.5).setAlpha(0).setInteractive().setDepth(10);
-        this.settingText = this.add.text(732 / 2, 300 + 30, 'Setting', { font: '16px Super Pixel', fill: '#ffffff' }).setOrigin(0.5).setAlpha(0).setInteractive().setDepth(10);
+        // this.creditText = this.add.text(732 / 2, 300, 'Credit', { font: '16px Super Pixel', fill: '#ffffff' }).setOrigin(0.5).setAlpha(0).setInteractive().setDepth(10);
+        // this.settingText = this.add.text(732 / 2, 300 + 30, 'Setting', { font: '16px Super Pixel', fill: '#ffffff' }).setOrigin(0.5).setAlpha(0).setInteractive().setDepth(10);
 
-        this.kotak1 = this.add.graphics();
-        this.kotak1.fillStyle(0xffffff, 0.5);
-        this.creditHover = this.kotak1.fillRect(732 / 2 - 50, 300 - 10, 100, 25).setDepth(9).setAlpha(0);
-        this.kotak2 = this.add.graphics();
-        this.kotak2.fillStyle(0xffffff, 0.5);
-        this.settingHover = this.kotak2.fillRect(732 / 2 - 50, 300 - 10 + 30, 100, 25).setDepth(9).setAlpha(0);
+        // this.kotak1 = this.add.graphics();
+        // this.kotak1.fillStyle(0xffffff, 0.5);
+        // this.creditHover = this.kotak1.fillRect(732 / 2 - 50, 300 - 10, 100, 25).setDepth(9).setAlpha(0);
+        // this.kotak2 = this.add.graphics();
+        // this.kotak2.fillStyle(0xffffff, 0.5);
+        // this.settingHover = this.kotak2.fillRect(732 / 2 - 50, 300 - 10 + 30, 100, 25).setDepth(9).setAlpha(0);
         this.kotak3 = this.add.graphics();
         this.kotak3.fillStyle(0xffffff, 0.5);
         this.startHover = this.kotak3.fillRect(732 / 2 - 50, 300 - 10 - 30, 100, 25).setDepth(9).setAlpha(0);
@@ -130,27 +130,27 @@ class menu extends Phaser.Scene{
             this.scene.start('gameLayout')
         })
 
-        this.settingText.on('pointerover', () => {
-            this.settingHover.setAlpha(1)
-        })
-        this.settingText.on('pointerout', () => {
-            this.settingHover.setAlpha(0)
-        })
-        this.settingText.on('pointerdown', () => {
-            this.clickFx.play()
-            this.scene.start('gameLayout')
-        })
+        // this.settingText.on('pointerover', () => {
+        //     this.settingHover.setAlpha(1)
+        // })
+        // this.settingText.on('pointerout', () => {
+        //     this.settingHover.setAlpha(0)
+        // })
+        // this.settingText.on('pointerdown', () => {
+        //     this.clickFx.play()
+        //     // this.scene.start('gameLayout')
+        // })
 
-        this.creditText.on('pointerover', () => {
-            this.creditHover.setAlpha(1)
-        })
-        this.creditText.on('pointerout', () => {
-            this.creditHover.setAlpha(0)
-        })
-        this.creditText.on('pointerdown', () => {
-            this.clickFx.play()
-            this.scene.start('gameLayout')
-        })
+        // this.creditText.on('pointerover', () => {
+        //     this.creditHover.setAlpha(1)
+        // })
+        // this.creditText.on('pointerout', () => {
+        //     this.creditHover.setAlpha(0)
+        // })
+        // this.creditText.on('pointerdown', () => {
+        //     this.clickFx.play()
+        //     // this.scene.start('gameLayout')
+        // })
        
         this.tweens.add({
             targets: [this.layer00, this.layer02, this.layer03, this.layer04, this.layer05, this,this.layer06, this.layer07, this.layer08, this.layer09, this,this.layer10, this,this.layer11],
